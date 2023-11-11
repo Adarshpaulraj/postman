@@ -1,9 +1,8 @@
 const mongoose=require('mongoose')
-const DB=require('../common/dbConfig')
-
+require('dotenv').config() 
 try {
-    console.log(`${DB.dbUrl}/${DB.dbName}`) 
-    mongoose.connect(`${DB.dbUrl}/${DB.dbName}`) 
+    console.log(`${process.env.dbUrl}/${process.env.dbName}`) 
+    mongoose.connect(`${process.env.dbUrl}/${process.env.dbName}`) 
 } catch (error) {
     console.log(error)
 }

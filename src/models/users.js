@@ -1,6 +1,11 @@
- const mongoose=require('./index')
+ import mongoose from'./index.js'
 //  const mongoose=require('mongoose')
 
+
+const validateEmail = (e)=>{
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(e); 
+}
 
 const userSchema=new mongoose.Schema({
     firstName:{
@@ -10,6 +15,14 @@ const userSchema=new mongoose.Schema({
     LastName:{
         type:String,
         required:[true,'last name reqiured']
+    },
+    email:{
+        type:String,
+        required:[true,"Email is required"]
+        ,validate:validateEmail},
+    password:{
+        type:String,
+        required:[true,"Password is required"]
     },
     phno:{
         type:Number,
@@ -29,7 +42,7 @@ const userSchema=new mongoose.Schema({
 })
 
 const userModel=mongoose.model('user',userSchema)
-module.exports=userModel
+export default userModel
 
 
 

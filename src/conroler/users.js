@@ -1,4 +1,5 @@
-const userModel = require("../models/users")
+import userModel from"../models/users.js"
+import Auth from '../common/auth.js'
 
 const getUSers=async(req,res)=>{
     try {
@@ -17,15 +18,16 @@ const getUSers=async(req,res)=>{
 }
 const createUser=async(req,res)=>{
 try {
-    const phno= await userModel.findOne({phno:req.body.phno})
-    if(!phno){
+    const email= await userModel.findOne({email:req.body.email})
+    if(!email){
+        req.body.password=await Auth.hashPassword(req.body.password)
     let user= await userModel.create(req.body)
     res.status(201).send({
         message:"created successfully",
         user
     })}else{
         res.status(400).send({
-            message:"exist phno"
+            message:"exist email"
         })
     }
 
@@ -90,9 +92,47 @@ const deleteUserByid= async (req,res)=>{
         })
     }
 }
-module.exports = {
+
+
+const login =async(req,res)=>{
+    try {
+        const user= await userModel.findOne({email:req.body.email})
+        if(user){
+             let hashCompare=await Auth.hashCompare(req.body.password,user.password)
+             if(hashCompare){
+                const token= await Auth.createToken({
+                    firstName:user.firstName,
+                    LastName:user.LastName,
+                    phno:user.phno
+                })
+                console.log("hii")
+                 res.status(200).send({
+                    message:"login successfully",
+                    token
+                 })
+             }else{
+                res.status(400).send({
+                    message:"invalid password"
+                }) 
+             }
+        }else{
+            res.status(400).send({
+                message:"does not exist"
+            
+            })
+        }
+    } catch (error) {
+        res.status(400).send({
+            message:"internal server error",
+            error:error.message
+        })
+    }
+}
+
+export default {
     getUSers,
 createUser,
 getUserByid,
 editUserByid,
-deleteUserByid}
+deleteUserByid,
+login}

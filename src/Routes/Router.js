@@ -1,5 +1,5 @@
-const express=require('express')
-const data =require("../conroler/Coupons")
+import express from "express"
+ import data from "../conroler/Coupons.js"
 const router=express.Router()
 
 router.get('/',data.getAllCoupons)
@@ -10,4 +10,4 @@ router.put('/:id',data.editCouponsByid)
  
 
 
-module.exports = router
+export default router
